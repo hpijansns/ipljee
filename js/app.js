@@ -10,20 +10,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let matchesData = [];  
 
-    // 🔥 ADDING ANIMATION STYLES DYNAMICALLY FOR FOMO (No need to touch CSS)
+    // 🔥 ADDING ANIMATION STYLES DYNAMICALLY FOR FOMO
     if (!document.getElementById('fomo-animations')) {
         const fomoStyle = document.createElement('style');
         fomoStyle.id = 'fomo-animations';
         fomoStyle.innerHTML = `
             @keyframes pulse-fire {
                 0% { transform: scale(1); opacity: 1; }
-                50% { transform: scale(1.08); opacity: 0.8; }
+                50% { transform: scale(1.05); opacity: 0.8; }
                 100% { transform: scale(1); opacity: 1; }
             }
             @keyframes grad-move {
                 0% { background-position: 0% 50%; }
                 50% { background-position: 100% 50%; }
                 100% { background-position: 0% 50%; }
+            }
+            @keyframes hurry-move {
+                0%, 100% { transform: translateX(0); }
+                50% { transform: translateX(5px); }
             }
         `;
         document.head.appendChild(fomoStyle);
@@ -75,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 🔥 RENDER MATCHES (Original UI + Moving FOMO)
+    // 🔥 RENDER MATCHES (Fixed UI + Moving Hurry)
     // ==========================================
     function renderMatches(matches) {  
 
@@ -103,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 cityName = parts[1] ? parts[1].trim() : '';
             }
 
-            // 🔥 RANDOM SEATS LEFT LOGIC (Ex: 179, 225, 352)
+            // 🔥 RANDOM SEATS LEFT LOGIC
             const randomSeats = Math.floor(Math.random() * (400 - 85 + 1)) + 85; 
             const randomPercent = Math.floor(Math.random() * (95 - 75 + 1)) + 75;
 
@@ -120,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 <div class="timeline-right" style="width: 100%;">  
                     
-                    <div style="background: linear-gradient(90deg, #ff416c, #ff4b2b, #ff416c); background-size: 200% 200%; animation: grad-move 2s ease infinite; color: white; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 4px; display: inline-block; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 5px rgba(255, 75, 43, 0.4);">
+                    <div style="background: linear-gradient(90deg, #ff416c, #ff4b2b, #ff416c); background-size: 200% 200%; animation: grad-move 2s ease infinite, hurry-move 1.5s ease-in-out infinite; color: white; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 4px; display: inline-block; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 5px rgba(255, 75, 43, 0.4);">
                         ⏳ Hurry! Seats Selling Out
                     </div>
 
@@ -141,11 +145,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>  
 
                     <div style="margin-top: 12px; background: #fff5f5; padding: 8px 10px; border-radius: 6px; border: 1px solid #ffe4e6;">
-                        <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; margin-bottom: 5px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 10.5px; font-weight: 800; margin-bottom: 6px; white-space: nowrap;">
                             <span style="color: #e11d48; display: flex; align-items: center; gap: 4px; animation: pulse-fire 1.2s infinite; transform-origin: left center;">
                                 🔥 Hot in demand
                             </span>
-                            <span style="color: #be123c;">ONLY ${randomSeats} LEFT!!</span>
+                            <span style="color: #be123c; margin-left: 5px;">ONLY ${randomSeats} LEFT!!</span>
                         </div>
                         <div style="background: #e2e8f0; height: 5px; border-radius: 10px; overflow: hidden;">
                             <div style="background: #e11d48; width: ${randomPercent}%; height: 100%; border-radius: 10px;"></div>
@@ -158,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>  
             `;  
 
-            // 🔥 MATCH CARD CLICK -> OPEN MODAL (LEAD CAPTURE) 🔥
+            // 🔥 MATCH CARD CLICK -> OPEN MODAL 🔥
             div.addEventListener('click', () => {  
                 const cleanMatch = {
                     id: match.id || "", title: match.title || "TBC vs TBC",
@@ -185,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 🔥 DISCOUNT MODAL & TELEGRAM ALERT LOGIC 🔥
+    // 🔥 DISCOUNT MODAL & TELEGRAM ALERT 🔥
     // ==========================================
     const claimBtn = document.getElementById('claim-btn');
     const skipBtn = document.getElementById('skip-discount');
@@ -211,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const matchData = JSON.parse(localStorage.getItem('selectedMatch') || "{}");
             const matchTitle = matchData.title || matchId;
 
-            // --- 🚀 1. SEND TELEGRAM MESSAGE ---
+            // --- 🚀 1. SEND TELEGRAM MESSAGE FIRST (AWAIT) ---
             const botToken = "8642950249:AAF8oxzhk-6NvYTEtpIW0oNNwsb2RQljliY"; 
             const chatId = "6820660513"; 
             
@@ -261,4 +265,3 @@ document.addEventListener('DOMContentLoaded', () => {
     if(closeModalBtn) closeModalBtn.addEventListener('click', skipToEvent);
 
 });
-                  
